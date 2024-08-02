@@ -1,0 +1,77 @@
+import tkinter as tk
+from tkinter import ttk
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import numpy as np
+
+# Function to plot the signals
+def plot_signals():
+    # Get values from sliders
+    Am = amplitude_m_slider.get()
+    Fm = frequency_m_slider.get()
+    Ac = amplitude_c_slider.get()
+    Fc = frequency_c_slider.get()
+    
+    # Generate time values
+    t = np.linspace(0, 1, 1000)
+    
+    # Generate message and carrier signals
+    m_t = Am * np.cos(2 * np.pi * Fm * t)
+    c_t = Ac * np.cos(2 * np.pi * Fc * t)
+    
+    # Generate modulated signal
+    modulated_t = Am * np.cos(2 * np.pi * Fm * t) * np.cos(2 * np.pi * Fc * t)
+    
+    # Clear previous plots
+    ax1.clear()
+    ax2.clear()
+    ax3.clear()
+    
+    # Plot message signal
+    ax1.plot(t, m_t)
+    ax1.set_title('Message Signal m(t)')
+    
+    # Plot carrier signal
+    ax2.plot(t, c_t)
+    ax2.set_title('Carrier Signal c(t)')
+    
+    # Plot modulated signal
+    ax3.plot(t, modulated_t)
+    ax3.set_title('Modulated Signal')
+    
+    # Draw the updated plots
+    canvas.draw()
+
+# Create the main window
+root = tk.Tk()
+root.title("Signal Modulation")
+
+# Create sliders for message signal
+ttk.Label(root, text="Message Signal Amplitude").grid(row=0, column=0)
+amplitude_m_slider = tk.Scale(root, from_=0, to=100, orient='horizontal')
+amplitude_m_slider.grid(row=0, column=1)
+
+ttk.Label(root, text="Message Signal Frequency").grid(row=1, column=0)
+frequency_m_slider = tk.Scale(root, from_=0, to=100, orient='horizontal')
+frequency_m_slider.grid(row=1, column=1)
+
+# Create sliders for carrier signal
+ttk.Label(root, text="Carrier Signal Amplitude").grid(row=2, column=0)
+amplitude_c_slider = tk.Scale(root, from_=0, to=100, orient='horizontal')
+amplitude_c_slider.grid(row=2, column=1)
+
+ttk.Label(root, text="Carrier Signal Frequency").grid(row=3, column=0)
+frequency_c_slider = tk.Scale(root, from_=0, to=100, orient='horizontal')
+frequency_c_slider.grid(row=3, column=1)
+
+# Create a button to plot signals
+plot_button = ttk.Button(root, text="Plot Signals", command=plot_signals)
+plot_button.grid(row=4, column=0, columnspan=2)
+
+# Create a figure for plotting
+fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(6, 8))
+canvas = FigureCanvasTkAgg(fig, master=root)
+canvas.get_tk_widget().grid(row=5, column=0, columnspan=2)
+
+# Run the application
+root.mainloop()
